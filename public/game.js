@@ -61,12 +61,15 @@ async function connect() {
     wsUrl = data.url.replace('https://', 'wss://');
     console.log('使用公网地址:', wsUrl);
   } catch (e) {
-    // 使用本地地址
+    // 使用当前页面地址
+    // Render 等平台需要使用 wss://
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    wsUrl = `${protocol}//${window.location.host}`;
-    console.log('使用本地地址:', wsUrl);
+    const host = window.location.host;
+    wsUrl = `${protocol}//${host}`;
+    console.log('使用地址:', wsUrl);
   }
 
+  console.log('Connecting to:', wsUrl);
   ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
