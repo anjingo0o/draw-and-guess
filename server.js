@@ -260,8 +260,8 @@ const server = http.createServer((req, res) => {
 
   let filePath = req.url === '/' ? '/index.html' : req.url;
 
-  // 处理 ngrok-url.json 请求
-  if (req.url === '/ngrok-url.json') {
+  // 处理 ngrok-url.json 请求（支持带查询参数的情况）
+  if (req.url.startsWith('/ngrok-url.json')) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ url: '' }));
     return;
