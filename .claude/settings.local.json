@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm start:*)",
+      "Bash(taskkill:*)",
+      "Bash(ipconfig:*)",
+      "Bash(npm run:*)",
+      "Bash(curl:*)",
+      "Bash(./cloudflared.exe:*)",
+      "Bash(node:*)",
+      "Bash(cmd:*)",
+      "Bash(set PORT=55187:*)",
+      "Bash(npx localtunnel:*)",
+      "Bash(ssh:*)",
+      "Bash(set PORT=58337:*)",
+      "Bash(tasklist:*)",
+      "Bash(set PORT=3456:*)",
+      "Bash(netstat:*)",
+      "Bash(powershell:*)",
+      "Bash(git init:*)",
+      "Bash(git:*)"
+    ]
+  }
+}

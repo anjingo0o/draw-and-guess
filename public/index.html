@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你画我猜 - 多人在线游戏</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 登录界面 -->
+    <div id="loginScreen" class="screen">
+      <div class="login-box">
+        <h1>🎨 你画我猜</h1>
+        <p class="subtitle">多人在线绘图猜词游戏</p>
+        <input type="text" id="playerName" placeholder="输入你的名字" maxlength="12">
+        <input type="text" id="roomId" placeholder="房间号（可选）" maxlength="10">
+        <button id="joinBtn" class="btn btn-primary">加入游戏</button>
+        <div class="rules">
+          <h3>📋 游戏规则</h3>
+          <ul>
+            <li>轮流绘画，其他玩家猜测</li>
+            <li>猜对得分，画得越快猜对得分越高</li>
+            <li>每轮60秒，共3轮</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 游戏大厅 -->
+    <div id="lobbyScreen" class="screen hidden">
+      <div class="lobby-container">
+        <div class="lobby-header">
+          <h2>游戏大厅</h2>
+          <button id="leaveBtn" class="btn btn-secondary">离开</button>
+        </div>
+        <div class="lobby-content">
+          <div class="players-list">
+            <h3>玩家列表</h3>
+            <ul id="playersList"></ul>
+          </div>
+          <div class="lobby-actions">
+            <button id="startBtn" class="btn btn-primary btn-large">开始游戏</button>
+            <p class="waiting-text">等待更多玩家加入...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="gameScreen" class="screen hidden">
+      <div class="game-container">
+        <!-- 顶部信息栏 -->
+        <div class="game-header">
+          <div class="round-info">
+            <span>第 <span id="currentRound">1</span> 轮</span>
+            <span>剩余时间: <span id="timeLeft">60</span> 秒</span>
+          </div>
+          <div class="word-display" id="wordDisplay">
+            <span id="wordHint">等待开始...</span>
+          </div>
+          <div class="drawer-info" id="drawerInfo">
+            画家: <span id="drawerName">-</span>
+          </div>
+        </div>
+
+        <!-- 游戏主体 -->
+        <div class="game-main">
+          <!-- 左侧玩家列表 -->
+          <div class="sidebar left">
+            <h3>玩家</h3>
+            <ul id="gamePlayersList"></ul>
+          </div>
+
+          <!-- 画布区域 -->
+          <div class="canvas-area">
+            <canvas id="drawingCanvas" width="800" height="600"></canvas>
+            <div class="canvas-tools" id="canvasTools">
+              <div class="tool-group colors">
+                <button class="color-btn active" data-color="#000000" style="background: #000000;"></button>
+                <button class="color-btn" data-color="#ff0000" style="background: #ff0000;"></button>
+                <button class="color-btn" data-color="#00ff00" style="background: #00ff00;"></button>
+                <button class="color-btn" data-color="#0000ff" style="background: #0000ff;"></button>
+                <button class="color-btn" data-color="#ffff00" style="background: #ffff00;"></button>
+                <button class="color-btn" data-color="#ff00ff" style="background: #ff00ff;"></button>
+                <button class="color-btn" data-color="#00ffff" style="background: #00ffff;"></button>
+                <button class="color-btn" data-color="#ffffff" style="background: #ffffff; border: 2px solid #ccc;"></button>
+              </div>
+              <div class="tool-group sizes">
+                <button class="size-btn active" data-size="3">细</button>
+                <button class="size-btn" data-size="6">中</button>
+                <button class="size-btn" data-size="12">粗</button>
+              </div>
+              <button id="clearBtn" class="btn btn-secondary">清空画布</button>
+            </div>
+            <div class="waiting-overlay" id="waitingOverlay">
+              <p>等待画家绘画...</p>
+            </div>
+          </div>
+
+          <!-- 右侧聊天猜测区 -->
+          <div class="sidebar right">
+            <div class="chat-container">
+              <div id="chatMessages" class="chat-messages"></div>
+              <div class="chat-input">
+                <input type="text" id="guessInput" placeholder="输入猜测..." maxlength="20">
+                <button id="sendGuessBtn" class="btn btn-primary">发送</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 回合结束弹窗 -->
+    <div id="roundEndModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>回合结束</h2>
+        <p>正确答案是: <span id="correctWord" class="highlight-word"></span></p>
+        <div id="roundScores" class="scores-list"></div>
+      </div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div id="gameEndModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>🎉 游戏结束</h2>
+        <div id="finalScores" class="scores-list"></div>
+        <button id="playAgainBtn" class="btn btn-primary">再玩一局</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
