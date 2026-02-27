@@ -253,8 +253,22 @@ class Room {
 
 // 创建 HTTP 服务器
 const server = http.createServer((req, res) => {
+  // 添加 CORS 头，允许跨域
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   let filePath = req.url === '/' ? '/index.html' : req.url;
+
+  // 处理 ngrok-url.json 请求
+  if (req.url === '/ngrok-url.json') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ url: '' }));
+    return;
+  }
+
   filePath = path.join(__dirname, 'public', filePath);
+  console.log('Request:', req.url, '->', filePath);
 
   const extname = path.extname(filePath);
   const contentType = MIME_TYPES[extname] || 'application/octet-stream';
