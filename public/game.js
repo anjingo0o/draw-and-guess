@@ -50,45 +50,39 @@ let lastX = 0;
 let lastY = 0;
 
 // 连接 WebSocket
-async function connect() {
-  let wsUrl;
+function connect() {
+  return new Promise((resolve, reject) => {
+    let wsUrl;
 
-  // 尝试获取 ngrok 公网地址
-  try {
-    const response = await fetch('/ngrok-url.json');
-    const data = await response.json();
-    // ngrok 使用 wss (WebSocket Secure)
-    wsUrl = data.url.replace('https://', 'wss://');
-    console.log('使用公网地址:', wsUrl);
-  } catch (e) {
     // 使用当前页面地址
-    // Render 等平台需要使用 wss://
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
     wsUrl = `${protocol}//${host}`;
     console.log('使用地址:', wsUrl);
-  }
 
-  console.log('Connecting to:', wsUrl);
-  ws = new WebSocket(wsUrl);
+    console.log('Connecting to:', wsUrl);
+    ws = new WebSocket(wsUrl);
 
-  ws.onopen = () => {
-    console.log('Connected to server');
-  };
+    ws.onopen = () => {
+      console.log('Connected to server');
+      resolve();
+    };
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    handleMessage(data);
-  };
+    ws.onerror = (err) => {
+      console.error('WebSocket error:', err);
+      reject(err);
+    };
 
-  ws.onclose = () => {
-    console.log('Disconnected from server');
-    alert('与服务器断开连接，请刷新页面重试');
-  };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      handleMessage(data);
+    };
 
-  ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
-  };
+    ws.onclose = () => {
+      console.log('Disconnected from server');
+      alert('与服务器断开连接，请刷新页面重试');
+    };
+  });
 }
 
 // 处理消息
@@ -186,16 +180,20 @@ async function joinGame() {
     return;
   }
 
-  await connect();
+  try {
+    await connect();
+    console.log('连接成功，发送加入消息');
 
-  // 等待连接建立后发送加入消息
-  setTimeout(() => {
+    // 连接成功后立即发送加入消息
     send({
       type: 'join',
       name: name,
       roomId: roomIdInput.value.trim()
     });
-  }, 500);
+  } catch (err) {
+    console.error('连接失败:', err);
+    alert('连接服务器失败，请刷新页面重试');
+  }
 }
 
 // 显示大厅
